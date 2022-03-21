@@ -168,14 +168,14 @@ impl Block for Cpu {
         });
 
         let mut barchart = String::new();
+        let mut barchart_short::  Vec<String>=Vec::new();
         let mut available_barchart_aggregations: Vec<usize> = Vec::new();
         let total_cpus = utilizations.len();
         let mut barchart_shorter_util: Vec<Vec<f64>> = Vec::new();
         for i in 1..=total_cpus{
             if total_cpus % i == 0{
                 available_barchart_aggregations.push(i);
-                barchart_shorter_util.push(Vec::<f64>::with_capacity( total_cpus / i  ));
-
+                barchart_shorter_util.push(vec![0.0; total_cpus/i ]   );
             }
         }
 
@@ -183,15 +183,7 @@ impl Block for Cpu {
         for (index, utilization ) in utilizations.iter().enumerate() {
             barchart.push(BOXCHARS[(7.5 * utilization) as usize]);
             for (short_index, aggregation_amount ) in available_barchart_aggregations.iter().enumerate(){
-                if index % aggregation_amount == 0{
-                    // barchart_shorter_util[short_index] += *utilization /   ( *aggregation_amount as f64) ;
-                }
-            }
-        }
-
-        for barch in barchart_shorter_util{
-            for ( ind, item ) in barch.iter().enumerate(){
-                println!("{}, {}", ind,item);
+                barchart_shorter_util[short_index][index % aggregation_amount] += utilization;
             }
         }
 
